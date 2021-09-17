@@ -6,7 +6,7 @@ const port = 3000;
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
-app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));
+app.listen(port, () => console.log(`QP Bot is now listening at http://localhost:${port}`));
 
 const Discord = require("discord.js");
 const fs = require("fs")
