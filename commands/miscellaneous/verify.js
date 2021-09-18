@@ -18,6 +18,7 @@ module.exports = {
 
         if(message.member.roles.cache.find(role => role.name === "Pisay Verified"))return message.reply("Seems like you're already verified!")
 
+        message.reply("Please read the DM I sent you.")
         try {
             const verifyChannel = client.channels.cache.get("758966976365199371")
 

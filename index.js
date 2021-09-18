@@ -243,7 +243,7 @@ client.on('guildMemberAdd', async member => {
       member.user.send({content: `You clicked \`${component.values[0]}\`.`})
   })
   collector.on("end", async component => {
-      if(!component.size) return member.user.send("Timed out.")
+      if(!component.size) return member.user.send("Timed out, run `q!verify` in <#852417681536974859> to reverify!")
 
       const batchVerify = await member.user.send({embeds: [embed2], components: [batchRow]})
 
@@ -257,7 +257,7 @@ client.on('guildMemberAdd', async member => {
       })
 
       batchCollector.on("end", async batch => {
-          if(!batch.size) return member.user.send("Timed out.")
+          if(!batch.size) return member.user.send("Timed out, run `q!verify` in <#852417681536974859> to reverify!")
 
           const finalVerify = await member.user.send({embeds: [embed3], components: [finalRow]})
 
@@ -282,7 +282,7 @@ client.on('guildMemberAdd', async member => {
           })
 
           finalCollector.on("end", async final => {
-              if(!final.size) return member.user.send("Timed out.")
+              if(!final.size) return member.user.send("Timed out, run `q!verify` in <#852417681536974859> to reverify!")
           })
       })
 
