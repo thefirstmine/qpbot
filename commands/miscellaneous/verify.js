@@ -11,7 +11,7 @@ module.exports = {
      * @param {String[]} args 
      * @returns 
      */
-	execute(client, message, args) {
+	async execute (client, message, args) {
         const { MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js');
         const arrayOfCampuses = ["BRC", "CARC", "CBZRC", "CLC", "CMC", "CRC", "CVC", "CVisC", "EVC", "IRC", "SMC", "SRC", "MRC", "MC", "WVC", "ZRC"]
         const arrayOfBatches = ["Batch 2022", "Batch 2023", "Batch 2024", "Batch 2025", "Batch 2026", "Batch 2027", "Graduated Alumnus"]
