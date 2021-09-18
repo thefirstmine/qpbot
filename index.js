@@ -288,7 +288,7 @@ client.on('guildMemberAdd', async member => {
 
   })
 } catch {
-  message.channel.send(`${member}, seems like I can't DM you!`)
+  verifyChannel.send(`${member}, seems like I can't DM you!`)
 }
 
 })
