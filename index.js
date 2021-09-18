@@ -232,7 +232,8 @@ client.on('guildMemberAdd', async member => {
       return member.guild.roles.cache.find(role => role.name === name)
   }
 
-  const campusVerify = await member.user.send({embeds: [embed1], components: [campusRow]})
+  try {
+    const campusVerify = await member.user.send({embeds: [embed1], components: [campusRow]})
   //actual time 1800000
   const collector = campusVerify.createMessageComponentCollector({interactionFilter, time:1800000})
   collector.on("collect", async component => {
@@ -286,6 +287,9 @@ client.on('guildMemberAdd', async member => {
       })
 
   })
+} catch {
+  message.channel.send(`${member}, seems like I can't DM you!`)
+}
 
 })
 
