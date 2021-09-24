@@ -270,6 +270,7 @@ client.on('guildMemberAdd', async member => {
               member.roles.add(findRole(roles[0]))
               member.roles.add(findRole(roles[1]))
               member.roles.add(findRole("Pisay Verified"))
+              member.roles.add(findRole("Server Verified"))
               member.roles.add(findRole("<~~~~~~~Color Roles~~~~~~~~>"))
               member.roles.add(findRole("<~~~~~~~~~School Roles~~~~~~~~~>"))
               member.roles.add(findRole("<~~~~~~~~~Leveled Roles~~~~~~~~~>"))
@@ -278,7 +279,6 @@ client.on('guildMemberAdd', async member => {
               const logger = client.channels.cache.get("887336979895816232")
               logger.send(`User \`${member.user.username} (${member.user.id})\` verified succesfully with:\nCampus: \`${roles[0]}\`\nBatch: \`${roles[1]}\``)
               member.user.send("Verification completed, welcome to Quarantined Pisaynons!")
-              verifyChannel.send(`${member}, please type in \`a;verify\` to complete the verification.`)
           })
 
           finalCollector.on("end", async final => {
