@@ -278,7 +278,7 @@ client.on('guildMemberAdd', async member => {
 
               const logger = client.channels.cache.get("887336979895816232")
               logger.send(`User \`${member.user.username} (${member.user.id})\` verified succesfully with:\nCampus: \`${roles[0]}\`\nBatch: \`${roles[1]}\``)
-              member.user.send("Verification completed, welcome to Quarantined Pisaynons!")
+              member.user.send("Verification completed, welcome to Quarantined Pisaynons! You can now chat in <#755070937371508827>.")
           })
 
           finalCollector.on("end", async final => {
