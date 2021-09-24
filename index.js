@@ -275,6 +275,7 @@ client.on('guildMemberAdd', async member => {
               member.roles.add(findRole("<~~~~~~~~~School Roles~~~~~~~~~>"))
               member.roles.add(findRole("<~~~~~~~~~Leveled Roles~~~~~~~~~>"))
               member.roles.add(findRole("<~~~~Miscellaneous Roles~~~~>"))
+              member.roles.remove(findRole("Unverified"))
 
               const logger = client.channels.cache.get("887336979895816232")
               logger.send(`User \`${member.user.username} (${member.user.id})\` verified succesfully with:\nCampus: \`${roles[0]}\`\nBatch: \`${roles[1]}\``)
