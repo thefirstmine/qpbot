@@ -116,7 +116,6 @@ module.exports = {
                         const logger = client.channels.cache.get("887336979895816232")
                         logger.send(`User \`${message.member.user.username} (${message.member.user.id})\` verified succesfully with:\nCampus: \`${roles[0]}\`\nBatch: \`${roles[1]}\``)
                         message.member.user.send("Verification completed, welcome to Quarantined Pisaynons!")
-                        verifyChannel.send(`${message.member}, please type in \`a;verify\` to complete the verification.`)
                     })
         
                     finalCollector.on("end", async final => {
