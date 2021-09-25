@@ -1,8 +1,8 @@
 const Discord = require("discord.js")
 
 module.exports = {
-	name: 'purge',
-	description: 'Bulk delete messages',
+	name: '1984',
+	description: 'Silence.',
     category: "Moderation",
     args: true,
     usage: "[number of messages]",
