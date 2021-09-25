@@ -4,8 +4,6 @@ module.exports = {
 	name: '1984',
 	description: 'Silence.',
     category: "Moderation",
-    args: true,
-    usage: "[number of messages]",
 	async execute(client, message, args) {
         if (!message.guild.me.permissions.has("MANAGE_MESSAGES")) return message.reply("I can't silence everyone! Contact your server admin to give me the `MANAGE_MESSAGES` permission.")
         if (!message.member.permissions.has("MANAGE_MESSAGES")) return message.reply("You can't 1984 the chat.")
