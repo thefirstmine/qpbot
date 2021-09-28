@@ -179,119 +179,125 @@ client.on('ready', async () => {
 
 client.on('guildMemberAdd', async member => {
   const { MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js');
-  const arrayOfCampuses = ["BRC", "CARC", "CBZRC", "CLC", "CMC", "CRC", "CVC", "CVisC", "EVC", "IRC", "SMC", "SRC", "MRC", "MC", "WVC", "ZRC"]
-  const arrayOfBatches = ["Batch 2022", "Batch 2023", "Batch 2024", "Batch 2025", "Batch 2026", "Batch 2027", "Graduated Alumnus"]
-
   const verifyChannel = client.channels.cache.get("758966976365199371")
-  verifyChannel.send(`Welcome to Quarantined Pisaynons, ${member}! Please read the DM I sent you to access the server. You have 30 minutes, else contact a staff member to assist you.`)
+  const verifySchema = require("./models/verifyToggle");
+  const data = await verifySchema.findOne({ guildID: member.guild.id });
 
-  const embed1 = new Discord.MessageEmbed()
-  .setTitle("Campus Assignment! Choose your campus from the select menu below.")
-  .setColor("#a83232")
+  if(data.disabled) {
+    verifyChannel.send(`Welcome to Quarantined Pisaynons, ${member}! Unfortunately, we have disabled verification for now. Please contact staff if you want to gain access to the server in <#852417681536974859>`)
+  } else {
+    const arrayOfCampuses = ["BRC", "CARC", "CBZRC", "CLC", "CMC", "CRC", "CVC", "CVisC", "EVC", "IRC", "SMC", "SRC", "MRC", "MC", "WVC", "ZRC"]
+    const arrayOfBatches = ["Batch 2022", "Batch 2023", "Batch 2024", "Batch 2025", "Batch 2026", "Batch 2027", "Graduated Alumnus"]
 
-  const embed2 = new Discord.MessageEmbed()
-  .setTitle("Great! I got your campus, now choose what batch you are in from the select menu below.")
-  .setColor("#a83232")
+    verifyChannel.send(`Welcome to Quarantined Pisaynons, ${member}! Please read the DM I sent you to access the server. You have 30 minutes, else contact a staff member to assist you.`)
 
-  const embed3 = new Discord.MessageEmbed()
-  .setTitle("Finally, click the checkmark below to complete your verification.")
-  .setColor("#a83232")
+    const embed1 = new Discord.MessageEmbed()
+    .setTitle("Campus Assignment! Choose your campus from the select menu below.")
+    .setColor("#a83232")
 
-  let roles = [];
+    const embed2 = new Discord.MessageEmbed()
+    .setTitle("Great! I got your campus, now choose what batch you are in from the select menu below.")
+    .setColor("#a83232")
 
-  const reformattedCampus = arrayOfCampuses.map(x => ({label: x, description: x, value: x}))
-  const reformattedBatch = arrayOfBatches.map(x => ({label: x, description: x, value: x}))
+    const embed3 = new Discord.MessageEmbed()
+    .setTitle("Finally, click the checkmark below to complete your verification.")
+    .setColor("#a83232")
 
-  const interactionFilter = (interaction) => interaction.user.id === member.id;
-  
-  const campusRow = new MessageActionRow()
-      .addComponents(
-          new MessageSelectMenu()
-              .setCustomId('campuses')
-              .setPlaceholder("Choose a campus here!")
-              .addOptions(reformattedCampus)
-      )
+    let roles = [];
 
-  const batchRow = new MessageActionRow()
-      .addComponents(
-          new MessageSelectMenu()
-              .setCustomId('batches')
-              .setPlaceholder("Choose your batch here!")
-              .addOptions(reformattedBatch)
-      )
-  
-  const finalRow = new MessageActionRow()
-      .addComponents(
-          new MessageButton()
-              .setCustomId('check')
-              .setLabel('✅')
-              .setStyle('SUCCESS')
-      )
+    const reformattedCampus = arrayOfCampuses.map(x => ({label: x, description: x, value: x}))
+    const reformattedBatch = arrayOfBatches.map(x => ({label: x, description: x, value: x}))
 
-  const findRole = (name) => {
-      return member.guild.roles.cache.find(role => role.name === name)
+    const interactionFilter = (interaction) => interaction.user.id === member.id;
+    
+    const campusRow = new MessageActionRow()
+        .addComponents(
+            new MessageSelectMenu()
+                .setCustomId('campuses')
+                .setPlaceholder("Choose a campus here!")
+                .addOptions(reformattedCampus)
+        )
+
+    const batchRow = new MessageActionRow()
+        .addComponents(
+            new MessageSelectMenu()
+                .setCustomId('batches')
+                .setPlaceholder("Choose your batch here!")
+                .addOptions(reformattedBatch)
+        )
+    
+    const finalRow = new MessageActionRow()
+        .addComponents(
+            new MessageButton()
+                .setCustomId('check')
+                .setLabel('✅')
+                .setStyle('SUCCESS')
+        )
+
+    const findRole = (name) => {
+        return member.guild.roles.cache.find(role => role.name === name)
+    }
+
+    try {
+      const campusVerify = await member.user.send({embeds: [embed1], components: [campusRow]})
+    //actual time 1800000
+    const collector = campusVerify.createMessageComponentCollector({interactionFilter, time:1800000})
+    collector.on("collect", async component => {
+        await component.deferUpdate()
+        campusVerify.delete()
+        roles.push(component.values[0])
+        member.user.send({content: `You clicked \`${component.values[0]}\`.`})
+    })
+    collector.on("end", async component => {
+        if(!component.size) return member.user.send("Timed out, run `q!verify` in <#852417681536974859> to reverify!")
+
+        const batchVerify = await member.user.send({embeds: [embed2], components: [batchRow]})
+
+        const batchCollector = batchVerify.createMessageComponentCollector({interactionFilter, time:1800000})
+
+        batchCollector.on("collect", async batch => {
+            await batch.deferUpdate()
+            batchVerify.delete()
+            roles.push(batch.values[0])
+            member.user.send({content: `You clicked \`${batch.values[0]}\`.`})
+        })
+
+        batchCollector.on("end", async batch => {
+            if(!batch.size) return member.user.send("Timed out, run `q!verify` in <#852417681536974859> to reverify!")
+
+            const finalVerify = await member.user.send({embeds: [embed3], components: [finalRow]})
+
+            const finalCollector = finalVerify.createMessageComponentCollector({interactionFilter, time:1800000})
+
+            finalCollector.on("collect", async final => {
+                await final.deferUpdate()
+                finalVerify.delete()
+
+                member.roles.add(findRole(roles[0]))
+                member.roles.add(findRole(roles[1]))
+                member.roles.add(findRole("Pisay Verified"))
+                member.roles.add(findRole("Server Verified"))
+                member.roles.add(findRole("<~~~~~~~Color Roles~~~~~~~~>"))
+                member.roles.add(findRole("<~~~~~~~~~School Roles~~~~~~~~~>"))
+                member.roles.add(findRole("<~~~~~~~~~Leveled Roles~~~~~~~~~>"))
+                member.roles.add(findRole("<~~~~Miscellaneous Roles~~~~>"))
+                member.roles.remove(findRole("Unverified"))
+
+                const logger = client.channels.cache.get("887336979895816232")
+                logger.send(`User \`${member.user.username} (${member.user.id})\` verified succesfully with:\nCampus: \`${roles[0]}\`\nBatch: \`${roles[1]}\``)
+                member.user.send("Verification completed, welcome to Quarantined Pisaynons! You can now chat in <#755070937371508827>.")
+            })
+
+            finalCollector.on("end", async final => {
+                if(!final.size) return member.user.send("Timed out, run `q!verify` in <#852417681536974859> to reverify!")
+            })
+        })
+
+    })
+  } catch {
+    verifyChannel.send(`${member}, seems like I can't DM you! Please run \`q!verify\` in <#852417681536974859> to reverify.`)
   }
-
-  try {
-    const campusVerify = await member.user.send({embeds: [embed1], components: [campusRow]})
-  //actual time 1800000
-  const collector = campusVerify.createMessageComponentCollector({interactionFilter, time:1800000})
-  collector.on("collect", async component => {
-      await component.deferUpdate()
-      campusVerify.delete()
-      roles.push(component.values[0])
-      member.user.send({content: `You clicked \`${component.values[0]}\`.`})
-  })
-  collector.on("end", async component => {
-      if(!component.size) return member.user.send("Timed out, run `q!verify` in <#852417681536974859> to reverify!")
-
-      const batchVerify = await member.user.send({embeds: [embed2], components: [batchRow]})
-
-      const batchCollector = batchVerify.createMessageComponentCollector({interactionFilter, time:1800000})
-
-      batchCollector.on("collect", async batch => {
-          await batch.deferUpdate()
-          batchVerify.delete()
-          roles.push(batch.values[0])
-          member.user.send({content: `You clicked \`${batch.values[0]}\`.`})
-      })
-
-      batchCollector.on("end", async batch => {
-          if(!batch.size) return member.user.send("Timed out, run `q!verify` in <#852417681536974859> to reverify!")
-
-          const finalVerify = await member.user.send({embeds: [embed3], components: [finalRow]})
-
-          const finalCollector = finalVerify.createMessageComponentCollector({interactionFilter, time:1800000})
-
-          finalCollector.on("collect", async final => {
-              await final.deferUpdate()
-              finalVerify.delete()
-
-              member.roles.add(findRole(roles[0]))
-              member.roles.add(findRole(roles[1]))
-              member.roles.add(findRole("Pisay Verified"))
-              member.roles.add(findRole("Server Verified"))
-              member.roles.add(findRole("<~~~~~~~Color Roles~~~~~~~~>"))
-              member.roles.add(findRole("<~~~~~~~~~School Roles~~~~~~~~~>"))
-              member.roles.add(findRole("<~~~~~~~~~Leveled Roles~~~~~~~~~>"))
-              member.roles.add(findRole("<~~~~Miscellaneous Roles~~~~>"))
-              member.roles.remove(findRole("Unverified"))
-
-              const logger = client.channels.cache.get("887336979895816232")
-              logger.send(`User \`${member.user.username} (${member.user.id})\` verified succesfully with:\nCampus: \`${roles[0]}\`\nBatch: \`${roles[1]}\``)
-              member.user.send("Verification completed, welcome to Quarantined Pisaynons! You can now chat in <#755070937371508827>.")
-          })
-
-          finalCollector.on("end", async final => {
-              if(!final.size) return member.user.send("Timed out, run `q!verify` in <#852417681536974859> to reverify!")
-          })
-      })
-
-  })
-} catch {
-  verifyChannel.send(`${member}, seems like I can't DM you! Please run \`q!verify\` in <#852417681536974859> to reverify.`)
 }
-
 })
 
 client.on('interactionCreate', async interaction => {
