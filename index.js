@@ -319,9 +319,7 @@ client.on('messageCreate', async message => {
 
   if (message.author.bot || message.channel.type === 'dm') return;
 
-  const fetchprefix = (await prefixSchema.findOne({
-    guildID: message.guild.id
-  }))?.prefix ?? "q!"
+  const fetchprefix = "q!"
   client.prefix = fetchprefix
 
   if (message.content.includes(`<@!${client.user.id}>`)){
