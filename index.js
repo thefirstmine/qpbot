@@ -322,6 +322,16 @@ client.on('messageCreate', async message => {
   const fetchprefix = "q!"
   client.prefix = fetchprefix
 
+  if (message.content.includes(`<@!${client.user.id}>`)){
+    if (fetchprefix === prefix){
+      message.reply(`My global prefix is \`${prefix}\``)
+    } else {
+      message.reply(
+        `My global prefix is \`${prefix}\` and this servers prefix is \`${fetchprefix}\``
+      )
+    }
+  }
+
   const prefixRegex = new RegExp(
     `^(${prefix}|${fetchprefix})\\s*`
   );
