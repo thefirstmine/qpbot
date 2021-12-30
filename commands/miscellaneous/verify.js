@@ -18,7 +18,7 @@ module.exports = {
         const data = await verifySchema.findOne({ guildID: message.guild.id });
       
         if(data.disabled) {
-          message.reply(`Welcome to Quarantined Pisaynons, ${message.member}! Unfortunately, we have disabled verification for now. Please contact staff if you want to gain access to the server in <#852417681536974859>`)
+          message.reply(`Welcome to Quarantined Pisaynons, ${message.member}! Unfortunately, we have disabled verification for now. Please contact staff if you want to gain access to the server in <#852417681536974859>. I will also ping <@&923579881177108490> to notify them.`)
         } else {
             const arrayOfCampuses = ["BRC", "CARC", "CBZRC", "CLC", "CMC", "CRC", "CVC", "CVisC", "EVC", "IRC", "SMC", "SRC", "MRC", "MC", "WVC", "ZRC"]
             const arrayOfBatches = ["Batch 2022", "Batch 2023", "Batch 2024", "Batch 2025", "Batch 2026", "Batch 2027", "Graduated Alumnus"]
