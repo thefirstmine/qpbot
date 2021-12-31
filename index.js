@@ -184,7 +184,7 @@ client.on('guildMemberAdd', async member => {
   const data = await verifySchema.findOne({ guildID: member.guild.id });
 
   if(data.disabled) {
-    verifyChannel.send(`Welcome to Quarantined Pisaynons, ${member}! Unfortunately, we have disabled verification for now. Please contact staff if you want to gain access to the server in <#852417681536974859>. I will also ping <@&923579881177108490> to notify them.`)
+    verifyChannel.send(. I will also ping <@&923579881177108490> to notify them.`Welcome to Quarantined Pisaynons, ${member}! Unfortunately, we have disabled verification for now. Please contact staff if you want to gain access to the server in <#852417681536974859>`)
   } else {
     const arrayOfCampuses = ["BRC", "CARC", "CBZRC", "CLC", "CMC", "CRC", "CVC", "CVisC", "EVC", "IRC", "SMC", "SRC", "MRC", "MC", "WVC", "ZRC"]
     const arrayOfBatches = ["Batch 2022", "Batch 2023", "Batch 2024", "Batch 2025", "Batch 2026", "Batch 2027", "Graduated Alumnus"]
